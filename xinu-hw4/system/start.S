@@ -1,0 +1,64 @@
+/**
+ * @file start.S
+ *
+ * Initialization code for Embedded Xinu on the RISC-V Virt device.
+ *
+ * Embedded Xinu, Copyright (C) 2022.  All rights reserved.
+ *
+ */
+#include <riscv.h>
+
+.section .init
+	.globl _start
+
+	/* _start:  Entry point of the Xinu kernel.  This will be the very first
+	/* byte of the kernel image and on the will be loaded at address 0x80000000.  */
+
+	.func _start
+_start:
+	/* Continue at reset handler. */
+	j reset_handler
+	.endfunc
+
+.section .text
+	/* reset_handler: Reset handler routine executed to start up the kernel,
+	 * when the processor is reset, or (currently) when an unhandled
+	 * exception occurs.  */
+    .func reset_handler
+reset_handler:
+
+	la a1, _end
+	li a3, 8192
+	add sp, a1, a3
+
+	la a0, _bss
+	la t0, _end
+	sub a1, t0, a0
+	call bzero
+
+	la a4, memheap
+	sw sp, 0(a4)
+
+	// Set the previous mode to S-Mode
+	li t1, RISCV_MPP_TO_S_MODE
+	csrs mstatus, t1
+
+	// Allow S-Mode to access all of memory
+	li t1, RISCV_MAX_ADDR	
+	csrw pmpaddr0, t1
+
+	li t1, RISCV_ALL_PERM
+	csrw pmpcfg0, t1
+
+	sfence.vma zero, zero
+
+	// Set the program counter to nulluser so when we run mret, it runs nulluser
+	la t1, nulluser
+	csrw mepc, t1
+
+    li tp, 0
+    li gp, 0
+
+	// Jump to null user
+	mret
+	.endfunc
