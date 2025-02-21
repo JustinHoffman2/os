@@ -125,6 +125,6 @@ void userret(void)
 {
     // ASSIGNMENT 5 TODO: Replace the call to kill(); with user_kill();
     // when you believe your trap handler is working in Assignment 5
-    // user_kill();
-    kill(currpid); 
+    user_kill();
+    //kill(currpid); 
 }

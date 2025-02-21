@@ -46,7 +46,6 @@ ctxsw:
 
 	sd	ra,	CTX_PC*8(a0)
 	sd	sp,	CTX_SP*8(a0)
-	//sd	pc,	CTX_PC*8(a0)
 
 // TODO: Switch from old process stack to new process stack.
 // TODO: Restore process state, including at least the
@@ -97,20 +96,20 @@ ctxsw:
 //	you call ctxsw() before it is complete.  But, this line of code
 //	is not actually a part of a completed solution.	
 	
-	ret
+	//ret
 
 // ASSIGNMENT 5 TODO:
 // Note: the following code is for the next assignment.  DO NOT uncomment it
 //      until you believe your trap handler is working.
 // Determine which privilege mode the process should be in
-//	ld t0, (**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
-//	beq t0, ra, switch
-//	li t4, SSTATUS_S_MODE
-//	csrc sstatus, t4
-//	csrw sepc, t0
-//
-//	sret
-//switch:
-//	ret
+	ld t0, CTX_PC*8(a1)		//(**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
+	beq t0, ra, switch
+	li t4, SSTATUS_S_MODE
+	csrc sstatus, t4
+	csrw sepc, t0
+
+	sret
+switch:
+	ret
 
 	.end ctxsw

@@ -1,4 +1,4 @@
-../system/kprintf.o: ../system/kprintf.c ../include/xinu.h \
+../system/dispatch.o: ../system/dispatch.c ../include/xinu.h \
  ../include/kernel.h ../include/stddef.h ../include/stdarg.h \
  ../include/compiler.h ../include/riscv.h ../include/ns16550.h \
  ../include/version.h ../include/ctype.h ../include/device.h \
