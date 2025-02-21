@@ -102,7 +102,7 @@ ctxsw:
 // Note: the following code is for the next assignment.  DO NOT uncomment it
 //      until you believe your trap handler is working.
 // Determine which privilege mode the process should be in
-	ld t0, CTX_PC*8(a1)		//(**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
+	ld t0, CTX_A0*8(a1)		//(**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
 	beq t0, ra, switch
 	li t4, SSTATUS_S_MODE
 	csrc sstatus, t4
