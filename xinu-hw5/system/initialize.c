@@ -11,7 +11,7 @@
 /* Function prototypes */
 static int sysinit(void);       /* intializes system structures          */
 static void welcome(void);      /* Print inital O/S data                 */
-process main(void);            /* xmain is the first process created     */
+process xmain(void);            /* xmain is the first process created     */
 
 /* Declarations of major kernel variables */
 pcb proctab[NPROC];             /* Process table                         */
@@ -45,7 +45,7 @@ void nulluser(void)
     /* Standard Embedded Xinu processor and memory info */
     welcome();
 
-    main();
+    xmain();
 
     ready(create((void *)nullproc, INITSTK, "prnull", 0), RESCHED_NO);
     kill(0);

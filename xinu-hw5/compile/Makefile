@@ -199,7 +199,7 @@ endif
 CONFIG := xinu.conf
 
 KERNARC  := kernel.a
-MAIN_SRC := $(TOPDIR)/main/main.c
+MAIN_SRC := $(TOPDIR)/main/xmain.c
 
 LIBDIR   := $(TOPDIR)/lib
 
