@@ -89,7 +89,7 @@ ctxsw:
 //	for the very first time we ctxsw() to a new process, when they
 //	are different.  See create() for more details.
 
-	jalr	zero,	t0
+//	jalr	zero,	t0
 
 // Note: This ret line immediately returns from whence we came.  This
 //	is here as a placeholder so that you don't crash your O/S when
@@ -102,7 +102,7 @@ ctxsw:
 // Note: the following code is for the next assignment.  DO NOT uncomment it
 //      until you believe your trap handler is working.
 // Determine which privilege mode the process should be in
-	ld t0, CTX_A0*8(a1)		//(**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
+	ld t0, CTX_PC*8(a1)		//(**REGISTER THAT HOLDS NEW CONTEXT PROGRAM COUNTER**)
 	beq t0, ra, switch
 	li t4, SSTATUS_S_MODE
 	csrc sstatus, t4
