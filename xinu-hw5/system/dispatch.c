@@ -26,11 +26,11 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	
 	if ((long)cause == E_ENVCALL_FROM_UMODE)
        	{
-		frame[CTX_A0] = syscall_dispatch(frame[CTX_A7], (ulong*)&frame[CTX_A0]);
+		frame[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)&frame[CTX_A0]);
 		set_sepc((ulong)program_counter + (ulong)4);
 	}
        	else
-       	{
+       	{	
 		xtrap(frame, cause, val, program_counter);
 	}
 
