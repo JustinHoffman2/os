@@ -46,7 +46,7 @@ ctxsw:
 
 	sd	ra,	CTX_PC*8(a0)
 	sd	sp,	CTX_SP*8(a0)
-
+	sd 	ra,	CTX_RA*8(a0)
 // TODO: Switch from old process stack to new process stack.
 // TODO: Restore process state, including at least the
 //	callee-save ("non-volatile") registers.
