@@ -2,6 +2,12 @@
  * @file dispatch.c
  * @provides dispatch
  *
+ * COSC 3250 - Project 5
+ * Handles traps
+ * @author Justin Hoffman & Luke Bondi
+ * Instructor Dr.Brylow
+ * TA-BOT:MAILTO justin.hoffman@marquette.edu
+ *
  */
 /* Embedded XINU, Copyright (C) 2008, 2023.  All rights reserved. */
 

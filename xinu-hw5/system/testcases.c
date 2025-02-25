@@ -1,8 +1,12 @@
 /**
  * @file testcases.c
  * @provides testcases
- *
- * TA-BOT:MAILTO
+ * 
+ * COSC 3250 - Project 5
+ * Tests trap handler
+ * @author Justin Hoffman & Luke Bondi
+ * Instructor Dr.Brylow
+ * TA-BOT:MAILTO justin.hoffman@marquette.edu
  *
  */
 /* Embedded XINU, Copyright (C) 2007.  All rights reserved. */
