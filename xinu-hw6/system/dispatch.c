@@ -50,6 +50,29 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	*
 	* If the trap is not an environment call from U-Mode call xtrap
 	*/
+    } else {
+	cause = cause << 1;
+    	cause = cause >> 1;
+    	uint irq_num;
+
+    	volatile uint *int_sclaim = (volatile uint *)(PLIC_BASE + 0x201004);
+    	irq_num = *int_sclaim;
+
+    	if(cause == I_SUPERVISOR_EXTERNAL) {
+        	interrupt_handler_t handler = interruptVector[irq_num];
+
+        	*int_sclaim = irq_num;
+        	if (handler)
+        	{
+            		(*handler) ();
+        	} else {
+            		kprintf("ERROR: No handler registered for interrupt %u\r\n",
+                    		irq_num);
+
+            		while (1)
+                	;
+        	}
+    	}
     }
 }
 
