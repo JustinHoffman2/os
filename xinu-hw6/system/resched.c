@@ -51,3 +51,18 @@ syscall resched(void)
     /* The OLD process returns here when resumed. */
     return OK;
 }
+
+void lottery(qid_typ q) {
+	unsigned int total;
+	pcb *currproc;
+	int head = queuehead(q);
+	pid_typ pid;
+	
+	pid = queuetab[head];
+	while (pid != EMPTY) {
+		currproc = &proctab[pid];
+		total += currproc->tickets;
+	       pid = queuetab[head].next;
+	}
+
+}
