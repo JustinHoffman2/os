@@ -54,6 +54,7 @@ typedef struct pentry
     int stklen;         /**< stack length                            */
     ulong ctx[CONTEXT]; /**< register context for non-running process*/
     char name[PNMLEN];  /**< process name                            */
+    unsigned int tickets;
 } pcb;
 
 /* process initialization constants */
