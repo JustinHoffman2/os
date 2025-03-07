@@ -46,23 +46,30 @@ syscall resched(void)
     preempt = QUANTUM;
 #endif
 
+    // Shows which processes the scheduler switches to
+    kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
+    
     ctxsw(&oldproc->ctx, &newproc->ctx);
 
     /* The OLD process returns here when resumed. */
     return OK;
 }
 
-void lottery(qid_typ q) {
+void lottery(pid_typ current_pid) {
 	unsigned int total;
-	pcb *currproc;
+	int rand_ticket;
+	pcb *currproc = &proctab[pid];
 	int head = queuehead(q);
-	pid_typ pid;
 	
+
+	// Finds all of the tickets of the current and ready processes
+	total += currproc->tickets;
 	pid = queuetab[head];
 	while (pid != EMPTY) {
 		currproc = &proctab[pid];
 		total += currproc->tickets;
-	       pid = queuetab[head].next;
+		pid = queuetab[pid].next;
 	}
+	rand_ticket = random(total - 1);
 
 }

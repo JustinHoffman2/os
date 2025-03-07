@@ -123,6 +123,7 @@ static int sysinit(void)
     ppcb->stkbase       = (void *)&_end;
     ppcb->stklen = (ulong)memheap - (ulong)&_end;
     currpid = NULLPROC;
+    ppcb->tickets = 1;
 
     readylist = newqueue();
 

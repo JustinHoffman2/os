@@ -35,7 +35,7 @@ extern void _start(void);
 // Counter for unget buffer
 extern unsigned int bufp;
 
-#define PREEMPT 	TRUE
+#define PREEMPT 	FALSE
 #define SEED		1431    /* seed for random number generator */
 
 
