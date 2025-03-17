@@ -70,6 +70,7 @@ void lottery(pid_typ current_pid) {
 		total += currproc->tickets;
 		pid = queuetab[pid].next;
 	}
-	rand_ticket = random(total - 1);
+	rand_ticket = random(total);
+	
 
 }
