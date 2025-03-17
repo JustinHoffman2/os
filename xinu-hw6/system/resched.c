@@ -9,6 +9,7 @@
 #include <xinu.h>
 
 extern void ctxsw(void *, void *);
+pid_typ lottery(void);
 /**
  * Reschedule processor to next ready process.
  * Upon entry, currpid gives current process id.  Proctab[currpid].pstate 
@@ -38,7 +39,10 @@ syscall resched(void)
      * random ticket value.  Remove process from queue.
      * Set currpid to the new process.
      */
-    currpid = dequeue(readylist);
+	
+    currpid = remove(lottery());
+
+   // currpid = dequeue(readylist);
     newproc = &proctab[currpid];
     newproc->state = PRCURR;    /* mark it currently running    */
 
@@ -55,28 +59,28 @@ syscall resched(void)
     return OK;
 }
 
-void lottery(pid_typ current_pid) {
+pid_typ lottery(void) {
 	int winner;
-	unsigned int total = 0;
+	pid_typ pid;
+	pcb *process;
 	int counter = 0;
-	pcb *currproc = &proctab[pid];
-	int head = queuehead(readylist);
+	unsigned int total = 0;
 
 	// Finds all of the tickets of the current and ready processes
-	pid = queuetab[head];
+	pid = firstid(readylist);
 	while (pid != EMPTY) {
-		currproc = &proctab[pid];
-		total += currproc->tickets;
+		process = &proctab[pid];
+		total += process->tickets;
 		pid = queuetab[pid].next;
 	}
 	winner = random(total);
-	pid = queuetab[head];
+	pid = firstid(readylist);
 	while (pid != EMPTY) {
-		currproc = &proctab[pid];
-		counter += currproc->tickets;
+		process = &proctab[pid];
+		counter += process->tickets;
 		if (counter > winner)
 			break;
 		pid = queuetab[pid].next;
 	}
-
+	return pid;
 }
