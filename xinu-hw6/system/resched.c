@@ -56,21 +56,27 @@ syscall resched(void)
 }
 
 void lottery(pid_typ current_pid) {
-	unsigned int total;
-	int rand_ticket;
+	int winner;
+	unsigned int total = 0;
+	int counter = 0;
 	pcb *currproc = &proctab[pid];
-	int head = queuehead(q);
-	
+	int head = queuehead(readylist);
 
 	// Finds all of the tickets of the current and ready processes
-	total += currproc->tickets;
 	pid = queuetab[head];
 	while (pid != EMPTY) {
 		currproc = &proctab[pid];
 		total += currproc->tickets;
 		pid = queuetab[pid].next;
 	}
-	rand_ticket = random(total);
-	
+	winner = random(total);
+	pid = queuetab[head];
+	while (pid != EMPTY) {
+		currproc = &proctab[pid];
+		counter += currproc->tickets;
+		if (counter > winner)
+			break;
+		pid = queuetab[pid].next;
+	}
 
 }
