@@ -80,9 +80,8 @@ int testprempt(int argc, char **argv){
 		else if(currpid ==3){
 			kprintf("%d\r\n", i);
 		}
-	//	user_yield();
 	}
-//	user_yield();
+	return 0;
 }
 
 void testbigargs(int a, int b, int c, int d, int e, int f, int g, int h)
