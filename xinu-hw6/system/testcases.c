@@ -67,6 +67,23 @@ int testmain(int argc, char **argv)
     }
     return 0;
 }
+int testprempt(int argc, char **argv){
+	int i = 0;
+	kprintf("Hi %d \r\n", currpid);
+	for(i = 0; i<10; i++){
+		if(currpid == 1){
+			kprintf("%c\r\n", 'a'+i);
+		}
+		else if(currpid == 2){
+			kprintf("%c\r\n", 'A' + i);
+		}
+		else if(currpid ==3){
+			kprintf("%d\r\n", i);
+		}
+	//	user_yield();
+	}
+//	user_yield();
+}
 
 void testbigargs(int a, int b, int c, int d, int e, int f, int g, int h)
 {
@@ -126,6 +143,7 @@ void testcases(void)
     kprintf("1) Test user_getc syscall\r\n");
     kprintf("2) Test user_putc syscall\r\n");
     kprintf("3) Create three processes that test user_yield syscall\r\n");
+    kprintf("P) Test Premption fr\r\n");
 
     kprintf("===TEST BEGIN===\r\n");
 
@@ -160,6 +178,19 @@ void testcases(void)
         while (numproc > 1)
             resched();
         break;
+
+     case 'P':
+        // Create three copies of a process, and let them play.
+        ready(create((void *)testprempt, INITSTK, 100, "PREMPT1", 2, 0, NULL),
+              RESCHED_NO);
+        ready(create((void *)testprempt, INITSTK, 75, "PREMPT2", 2, 0, NULL),
+              RESCHED_NO);
+        ready(create((void *)testprempt, INITSTK, 50, "PREMPT3", 2, 0, NULL),
+              RESCHED_YES);
+        while (numproc > 1)
+            resched();
+        break;
+
 
     default:
         break;
