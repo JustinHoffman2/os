@@ -51,7 +51,7 @@ syscall resched(void)
 #endif
 
     // Shows which processes the scheduler switches to
-    kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
+   kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
     
     ctxsw(&oldproc->ctx, &newproc->ctx);
 
@@ -64,7 +64,7 @@ pid_typ lottery(void) {
 	pid_typ pid;
 	pcb *process;
 	int counter = 0;
-	unsigned int total = 0;
+	ulong total = 0;
 
 	// Finds all of the tickets of the current and ready processes
 	pid = firstid(readylist);
@@ -73,7 +73,9 @@ pid_typ lottery(void) {
 		total += process->tickets;
 		pid = queuetab[pid].next;
 	}
+	// Generates a random ticket
 	winner = random(total);
+	// Finds the winning process based on the ticket number
 	pid = firstid(readylist);
 	while (pid != EMPTY) {
 		process = &proctab[pid];
