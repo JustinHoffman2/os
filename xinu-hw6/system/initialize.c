@@ -52,7 +52,7 @@ void nulluser(void)
 
     xmain();
 
-    ready(create((void *)nullproc, INITSTK, 0, "prnull", 0), RESCHED_NO);
+    ready(create((void *)nullproc, INITSTK, 1, "prnull", 0), RESCHED_NO);
     kill(0);
 }
 
