@@ -55,7 +55,7 @@ syscall resched(void)
 #endif
 
     // Shows which processes the scheduler switches to
-   kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
+   //kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
     
     ctxsw(&oldproc->ctx, &newproc->ctx);
 
