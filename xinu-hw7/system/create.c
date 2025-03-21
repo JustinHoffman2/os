@@ -14,7 +14,7 @@
 
 static pid_typ newpid(void);
 void userret(void);
-void *getstk(ulong);
+//void *getstk(ulong);
 
 /**
  * Create a new process to start running a function.
@@ -38,7 +38,8 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 
     ssize = (ulong)((((ulong)(ssize + 3)) >> 2) << 2);
     /* round up to even boundary    */
-    saddr = (ulong *)getstk(ssize);     /* allocate new stack and pid   */
+    //saddr = (ulong *)getstk(ssize);    allocate new stack and pid
+    saddr = (ulong *)pgalloc(); //Added for project 7
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -55,9 +56,13 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 	ppcb->tickets = priority; //definitly correct
 	ppcb->stkbase = saddr;
 	ppcb->stklen = ssize;
-	strncpy(ppcb->name, name, PNMLEN);	
+	strncpy(ppcb->name, name, PNMLEN);
+
+	ppcb->pagetable = vm_userinit(pid, saddr); // Added for project 7	
 
     /* Initialize stack with accounting block. */
+    saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong)); // Added for project 7
+
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;

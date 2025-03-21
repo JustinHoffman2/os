@@ -8,7 +8,7 @@
 
 #include <xinu.h>
 
-extern void ctxsw(void *, void *);
+extern void ctxsw(void *, void *, ulong);
 pid_typ lottery(void);
 /**
  * Reschedule processor to next ready process.
@@ -53,7 +53,8 @@ syscall resched(void)
     // Shows which processes the scheduler switches to
   // kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
     
-    ctxsw(&oldproc->ctx, &newproc->ctx);
+    ctxsw(&oldproc->ctx, &newproc->ctx, 
+		    MAKE_SATP(currpid, newproc->pagetable));
 
     /* The OLD process returns here when resumed. */
     return OK;
