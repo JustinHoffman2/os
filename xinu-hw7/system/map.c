@@ -71,6 +71,11 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
  *  don't exist.
  */
 
+	ulong vpn2 = PX(2, vaddr); //gets the virtual page number and the offset using built in macros
+	ulong vpn1 = PX(1, vaddr);
+	ulong vpn0 = PX(0, vaddr);
+	ulong offset = vaddr & VA_SHIFT;
+	//Doesn't do anything yet but its coming... pte level2 = pagetable();
     /**
     * TODO:
     * For each level in the page table, get the page table entry by masking
