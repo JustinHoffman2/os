@@ -85,6 +85,9 @@ syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong na
 	ppcb->ctx[CTX_SP] = (ulong)saddr;
 	ppcb->ctx[CTX_PC] = (ulong)funcaddr;
 
+	ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
+	ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp;
+	
 	va_start(ap, nargs);
     //
     // TODO:  Place arguments into context and/or activation record.
