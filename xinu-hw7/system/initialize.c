@@ -62,7 +62,7 @@ void nulluser(void)
 
     /* Setup memory protection for kernel.  Turn paging on for kernel. */
     // TODO: Uncomment this line once you have thoroughly tested paging.
-    // _kernpgtbl = vm_kerninit();
+    _kernpgtbl = vm_kerninit();
 
     xmain();
 
