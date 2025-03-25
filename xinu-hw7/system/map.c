@@ -71,6 +71,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
  *  don't exist.
  */
 
+	/*
 	ulong vpn2 = PX(2, vaddr); //gets the virtual page number and the offset using built in macros
 	ulong vpn1 = PX(1, vaddr);
 	ulong vpn0 = PX(0, vaddr);
@@ -97,7 +98,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 
 	level0[offset] = attr;
 	level0[offset] = level0[offset] | PTE_V;
-
+	*/
 
 	// I think this is right
 	ulong vpn2 = PX(2, vaddr);
