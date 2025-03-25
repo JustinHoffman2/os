@@ -97,6 +97,30 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 
 	level0[offset] = attr;
 	level0[offset] = level0[offset] | PTE_V;
+
+
+	// I think this is right
+	ulong vpn2 = PX(2, vaddr);
+	ulong *pte2 = &(pagetable[vpn2]);
+	if(!(pte2 & PTE_V)) {
+		pgtbl table1 = pgalloc();
+		*pte2 = PA2PTE(table1) | PTE_V;
+	}
+	pgtbl level1 = PTE2PA(*pte2);
+
+	ulong vpn1 = PX(1, vaddr);
+	ulong *pte1 = &(level1[vpn1]);
+	if (!(pte1 & PTE_V)) {
+		pgtbl table0 = pgalloc();
+		*pte1 = PA2PTE(table0) | PTE_V;
+	}
+	pgtbl level0 = PTE2PA(*pte1);
+
+	ulong vpn0 = PX(0, vaddr);
+	ulong *pte0 = &(level0[vpn0]);
+	*pte0 = PA2PTE(paddr) | attr | PTE_V;
+
+	sfence_vma();
     /**
     * TODO:
     * For each level in the page table, get the page table entry by masking
