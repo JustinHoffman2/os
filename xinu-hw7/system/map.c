@@ -103,7 +103,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 	// I think this is right
 	ulong vpn2 = PX(2, vaddr);
 	ulong *pte2 = &(pagetable[vpn2]);
-	if(!(pte2 & PTE_V)) {
+	if(!(*pte2 & PTE_V)) {
 		pgtbl table1 = pgalloc();
 		*pte2 = PA2PTE(table1) | PTE_V;
 	}
@@ -111,7 +111,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 
 	ulong vpn1 = PX(1, vaddr);
 	ulong *pte1 = &(level1[vpn1]);
-	if (!(pte1 & PTE_V)) {
+	if (!(*pte1 & PTE_V)) {
 		pgtbl table0 = pgalloc();
 		*pte1 = PA2PTE(table0) | PTE_V;
 	}
