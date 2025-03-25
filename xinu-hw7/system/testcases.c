@@ -48,6 +48,19 @@ void printPageTable(pgtbl pagetable)
 	* table.  If it is a leaf, print the page table entry and the
 	* physical address is maps to. 
 	*/
+
+	int i;
+	for (i = 0; i < 512; i++) {
+		if (pagetable[i] & PTE_V) {
+			kprintf("Entry %d: ", i);
+			if (pagetable[i] & (PTE_R | PTE_W | PTE_X)) {
+				kprintf("PA = 0x%lx\r\n", PTE2PA(pagetable[i]));
+			} else {
+				kprintf("Next table @ 0x%lx\r\n", PTE2PA(pagetable[i]));
+				printPageTable(PTE2PA(pagetable[i]));
+			}
+		}	
+	}
 }
 
 /**
@@ -83,6 +96,10 @@ void testcases(void)
 			// testcase that demonstrates your OS can detect a
 			// Null Pointer Exception.
 			break;
+		case '4':
+			pgtbl table;
+		      	table = createFakeTable();
+			printPageTable(table);
 		default:
 			break;
 	}

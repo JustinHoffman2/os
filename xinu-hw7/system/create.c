@@ -24,7 +24,7 @@ void userret(void);
  * @param nargs    number of arguments that follow
  * @return the new process id
  */
-syscall create(void *funcaddr, ulong ssize, ulong priority, char *name, ulong nargs, ...)
+syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nargs, ...)
 {
     ulong *saddr;               /* stack address                */
     ulong pid;                  /* stores new process id        */
