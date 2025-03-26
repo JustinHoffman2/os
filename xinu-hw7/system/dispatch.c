@@ -23,21 +23,21 @@
  * @param program_counter  The value of the sepc register 
  */
 
-void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
+void dispatch(ulong cause, ulong val, ulong *swaparea, ulong *program_counter) {
     ulong swi_opcode;
-    swi_opcode = frame[CTX_A7];
+    swi_opcode = swaparea[CTX_A7];
     if((long)cause > 0) {
         cause = cause << 1;
         cause = cause >> 1;
 	
 	if ((long)cause == E_ENVCALL_FROM_UMODE)
        	{
-		frame[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)&frame[CTX_A0]);
+		swaparea[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)&swaparea[CTX_A0]);
 		set_sepc((ulong)program_counter + (ulong)4);
 	}
        	else
        	{	
-		xtrap(frame, cause, val, program_counter);
+		xtrap(swaparea, cause, val, program_counter);
 	}
 
        /**
@@ -47,7 +47,6 @@ void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	* Pass the system call number and any arguments into syscall_dispatch.
 	* Make sure to set the return value in the appropriate spot.
 	* Update the program counter appropriately with set_sepc
-	*
 	* If the trap is not an environment call from U-Mode call xtrap
 	*/
     } else {
