@@ -50,14 +50,15 @@ void printPageTable(pgtbl pagetable)
 	*/
 
 	int i;
+	kprintf("PageTable @ PA = 0x%x:\r\n", pagetable);
 	for (i = 0; i < 512; i++) {
 		if (pagetable[i] & PTE_V) {
-			kprintf("Entry %d: ", i);
+			kprintf("\tEntry %d: ", i);
 			if (pagetable[i] & (PTE_R | PTE_W | PTE_X)) {
-				kprintf("PA = 0x%lx\r\n", PTE2PA(pagetable[i]));
+				kprintf("Leaf @ PA = 0x%x\r\n", PTE2PA(pagetable[i]));
 			} else {
-				kprintf("Next table @ 0x%lx\r\n", PTE2PA(pagetable[i]));
-				printPageTable(PTE2PA(pagetable[i]));
+				kprintf("Link @ PA = 0x%x\r\n", PTE2PA(pagetable[i]));
+				printPageTable((pgtbl)PTE2PA(pagetable[i]));
 			}
 		}	
 	}
@@ -73,6 +74,12 @@ void testcases(void)
 	kprintf("===TEST BEGIN===\r\n");
 
 	// TODO: Test your operating system!
+	
+	kprintf("0) user process & page table\r\n");
+	kprintf("1) user process memory access\r\n");
+	kprintf("2) user process read kernel, not write\r\n");
+	kprintf("3)\r\n");
+	kprintf("4) Test page table print\r\n");
 
 	c = kgetc();
 	switch (c)

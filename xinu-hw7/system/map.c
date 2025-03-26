@@ -107,7 +107,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 		pgtbl table1 = pgalloc();
 		*pte2 = PA2PTE(table1) | PTE_V;
 	}
-	pgtbl level1 = PTE2PA(*pte2);
+	pgtbl level1 = (pgtbl)PTE2PA(*pte2);
 
 	ulong vpn1 = PX(1, vaddr);
 	ulong *pte1 = &(level1[vpn1]);
@@ -115,7 +115,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 		pgtbl table0 = pgalloc();
 		*pte1 = PA2PTE(table0) | PTE_V;
 	}
-	pgtbl level0 = PTE2PA(*pte1);
+	pgtbl level0 = (pgtbl)PTE2PA(*pte1);
 
 	ulong vpn0 = PX(0, vaddr);
 	ulong *pte0 = &(level0[vpn0]);
