@@ -101,6 +101,9 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 	*/
 
 	// I think this is right
+	if (pagetable == 0)
+		pagetable = pgalloc();
+
 	ulong vpn2 = PX(2, vaddr);
 	ulong *pte2 = &(pagetable[vpn2]);
 	if(!(*pte2 & PTE_V)) {
