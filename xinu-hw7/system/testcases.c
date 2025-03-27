@@ -64,6 +64,14 @@ void printPageTable(pgtbl pagetable)
 	}
 }
 
+int test_usernone(void) {
+	kprintf("Test of user_none\r\n");
+	user_none();
+	pcb *ppcb = &proctab[currpid];
+	printPageTable(ppcb->pagetable);
+	return 1;
+}
+
 /**
  * testcases - called after initialization completes to test things.
  */
@@ -87,6 +95,8 @@ void testcases(void)
 		case '0':
 			// TODO: Write a testcase that creates a user process
 			// and prints out it's page table
+			ready(create((void *)test_usernone, INITSTK, 100, "test_usernone", 0),
+					RESCHED_YES);
 			break;
 		case '1':
 			// TODO: Write a testcase that demonstrates a user
