@@ -23,7 +23,7 @@
  * @param program_counter  The value of the sepc register 
  */
 
-void dispatch(ulong cause, ulong val, ulong *swaparea, ulong *program_counter) {
+void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
     ulong swi_opcode;
     swi_opcode = swaparea[CTX_A7];
     if((long)cause > 0) {
