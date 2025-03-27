@@ -25,19 +25,20 @@
 
 void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
     ulong swi_opcode;
-    swi_opcode = swaparea[CTX_A7];
+    pcb *ppcb = &proctab[currpid];
+    swi_opcode = frame[CTX_A7];
     if((long)cause > 0) {
         cause = cause << 1;
         cause = cause >> 1;
 	
 	if ((long)cause == E_ENVCALL_FROM_UMODE)
        	{
-		swaparea[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)&swaparea[CTX_A0]);
+		ppcb->swaparea[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)ppcb->swaparea[CTX_A0]);
 		set_sepc((ulong)program_counter + (ulong)4);
 	}
        	else
        	{	
-		xtrap(swaparea, cause, val, program_counter);
+		xtrap(ppcb->swaparea, cause, val, program_counter);
 	}
 
        /**
