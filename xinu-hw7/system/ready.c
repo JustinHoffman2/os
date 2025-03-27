@@ -26,7 +26,7 @@ syscall ready(pid_typ pid, bool resch)
     
     if (resch)
     {
-        resched();
+	    resched();
     }
     return OK;
 }

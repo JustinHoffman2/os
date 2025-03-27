@@ -24,7 +24,8 @@
  */
 
 void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
-    ulong swi_opcode;
+	kprintf("TESTING");	
+ulong swi_opcode;
     pcb *ppcb = &proctab[currpid];
     swi_opcode = frame[CTX_A7];
     if((long)cause > 0) {

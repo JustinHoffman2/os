@@ -95,8 +95,9 @@ void testcases(void)
 		case '0':
 			// TODO: Write a testcase that creates a user process
 			// and prints out it's page table
+			
 			ready(create((void *)test_usernone, INITSTK, 100, "test_usernone", 0),
-					RESCHED_YES);
+					RESCHED_NO);
 			break;
 		case '1':
 			// TODO: Write a testcase that demonstrates a user

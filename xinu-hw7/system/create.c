@@ -48,8 +48,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
     }
 
     numproc++;
-    ppcb = &proctab[pid];
-	
+    ppcb = &proctab[pid];	
     // TODO: Setup PCB entry for new process.
 
 	ppcb->state = PRSUSP;
@@ -59,7 +58,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 	strncpy(ppcb->name, name, PNMLEN);
 
 	ppcb->pagetable = vm_userinit(pid, saddr); // Added for project 7	
-
+	
     /* Initialize stack with accounting block. */
     saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong)); // Added for project 7
 
@@ -103,7 +102,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 	}
 
 	va_end(ap);
-
+	
     return pid;
 }
 
