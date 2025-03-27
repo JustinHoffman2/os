@@ -23,11 +23,11 @@
  * @param program_counter  The value of the sepc register 
  */
 
-void dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
+ulong dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	kprintf("TESTING");	
 ulong swi_opcode;
     pcb *ppcb = &proctab[currpid];
-    swi_opcode = frame[CTX_A7];
+    swi_opcode = ppcb->swaparea[CTX_A7];
     if((long)cause > 0) {
         cause = cause << 1;
         cause = cause >> 1;
@@ -75,5 +75,6 @@ ulong swi_opcode;
         	}
     	}
     }
+    return MAKE_SATP(currpid, ppcb->pagetable);
 }
 

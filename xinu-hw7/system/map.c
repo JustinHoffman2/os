@@ -105,7 +105,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
     */
 
     //  DEBUGGING LINE:
-    //  kprintf("mapPage(pt:0x%X, v:0x%X, p:0x%0X, a:0x%03X)\r\n",
+   // kprintf("mapPage(pt:0x%X, v:0x%X, p:0x%0X, a:0x%03X)\r\n",
     //          pagetable, vaddr, paddr, attr);
 
     return OK;
