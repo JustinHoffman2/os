@@ -90,7 +90,7 @@ syscall mapPage(pgtbl pagetable, ulong vaddr, ulong paddr, int attr)
 
 	ulong vpn0 = PX(0, vaddr);
 	ulong *pte0 = &(level0[vpn0]);
-	*pte0 = PA2PTE(paddr) | attr | PTE_U | PTE_V;
+	*pte0 = PA2PTE(paddr) | attr | PTE_V;
 
 	sfence_vma();
     /**
