@@ -42,7 +42,6 @@ syscall resched(void)
 
     currpid = remove(lottery());
 
-   // currpid = dequeue(readylist);
     newproc = &proctab[currpid];
     newproc->state = PRCURR;    /* mark it currently running    */
 
@@ -51,7 +50,8 @@ syscall resched(void)
 #endif
 
     // Shows which processes the scheduler switches to
-// kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
+    //kprintf("[%d %d]", oldproc-proctab, newproc-proctab);
+
     ctxsw(&oldproc->ctx, &newproc->ctx, 
 		    MAKE_SATP(currpid, newproc->pagetable));
     /* The OLD process returns here when resumed. */
@@ -60,50 +60,30 @@ syscall resched(void)
 
 pid_typ lottery(void) {
 	int winner;
-	pid_typ pid;
-	pcb *process;
+	pcb *ppcb;
 	int counter = 0;
-	ulong total = 0;
+	int total = 0;
 
 	// Finds all of the tickets of the current and ready processes
-	/*
-	pid = firstid(readylist);
-	kprintf("PID FIRST: %d\r\n", pid);
-	while (pid != EMPTY) {
-		process = &proctab[pid];
-		total += process->tickets;
-		pid = queuetab[pid].next;
-	}
-	*/
 	int i;
 	for (i = 0; i < NPROC; i++) {
-		process = &proctab[i];
-		if (process->state == PRCURR || process->state == PRREADY) {
-			total += process->tickets;
+		ppcb = &proctab[i];
+		if (ppcb->state == PRCURR || ppcb->state == PRREADY) {
+			total += ppcb->tickets;
 		}
 	}
 	// Generates a random ticket
 	winner = random(total);
-	// Finds the winning process based on the ticket number
 	
+	// Finds the winning process based on the ticket number
 	for (i = 0; i < NPROC; i++) {
-		process = &proctab[i];
-		if (process->state == PRCURR || process->state == PRREADY) {
-			counter += process->tickets;
+		ppcb = &proctab[i];
+		if (ppcb->state == PRCURR || ppcb->state == PRREADY) {
+			counter += ppcb->tickets;
 			if (counter > winner)
 				return i;
 		}
 	}
-	
-	/*
-	pid = firstid(readylist);
-	while (pid != EMPTY) {
-		process = &proctab[pid];
-		counter += process->tickets;
-		if (counter > winner)
-			break;
-		pid = queuetab[pid].next;
-	}
-	*/
+	// Winning process not found
 	return SYSERR;
 }
