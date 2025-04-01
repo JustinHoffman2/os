@@ -38,8 +38,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 
     ssize = (ulong)((((ulong)(ssize + 3)) >> 2) << 2);
     /* round up to even boundary    */
-    //saddr = (ulong *)getstk(ssize);    allocate new stack and pid
-    saddr = (ulong *)pgalloc(); //Added for project 7
+    saddr = (ulong *)pgalloc(); // Allocates pages for the stack (HW7)
     pid = newpid();
     /* a little error checking      */
     if ((((ulong *)SYSERR) == saddr) || (SYSERR == pid))
@@ -52,16 +51,18 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
     // TODO: Setup PCB entry for new process.
 
 	ppcb->state = PRSUSP;
-	ppcb->tickets = priority; //definitly correct
+	ppcb->tickets = priority; // Allocates process' tickets (HW6)
 	ppcb->stkbase = saddr;
 	ppcb->stklen = ssize;
 	strncpy(ppcb->name, name, PNMLEN);
 
-	ppcb->pagetable = vm_userinit(pid, saddr); // Added for project 7	
+	ppcb->pagetable = vm_userinit(pid, saddr); // Initializes user page table (HW7)	
 	
     /* Initialize stack with accounting block. */
-    saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong)); // Added for project 7
-    ulong top = (ulong)saddr +sizeof(ulong); // Oliver said to add this need to add what was just lost
+    // Calculates top of stack address w/o pointer arithmetic (HW7)
+    saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong));
+	
+    ulong top = (ulong)saddr +sizeof(ulong); // Gets the top of the stack without the ulong size (HW7)
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
@@ -81,11 +82,11 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
     // TODO: Initialize process context.
 
     	ppcb->ctx[CTX_RA] = (ulong)userret;
-	ppcb->ctx[CTX_SP] = (ulong)PROCSTACKVADDR + PAGE_SIZE - (top - (ulong)saddr);//pay attention to this line per brylow 
+	ppcb->ctx[CTX_SP] = (ulong)PROCSTACKVADDR + PAGE_SIZE - (top - (ulong)saddr); // Calculates SP based on VA, Page & top of stack (HW7)
 	ppcb->ctx[CTX_PC] = (ulong)funcaddr;
 
-	ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
-	ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp;
+	ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl); // Initializes swap area SATP register (HW7)
+	ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp; // Initializes swap area SP register (HW7)
 	
 	va_start(ap, nargs);
     //
