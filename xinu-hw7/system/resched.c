@@ -39,7 +39,7 @@ syscall resched(void)
      * random ticket value.  Remove process from queue.
      * Set currpid to the new process.
      */
-	
+
     currpid = remove(lottery());
 
    // currpid = dequeue(readylist);
@@ -51,11 +51,9 @@ syscall resched(void)
 #endif
 
     // Shows which processes the scheduler switches to
- // kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
-   kprintf("BEFORE");
+// kprintf("[%d %d]", oldproc-proctab, newproc-proctab); // Added from Lecture
     ctxsw(&oldproc->ctx, &newproc->ctx, 
 		    MAKE_SATP(currpid, newproc->pagetable));
-	kprintf("AFTER");
     /* The OLD process returns here when resumed. */
     return OK;
 }
@@ -68,22 +66,35 @@ pid_typ lottery(void) {
 	ulong total = 0;
 
 	// Finds all of the tickets of the current and ready processes
+	/*
 	pid = firstid(readylist);
+	kprintf("PID FIRST: %d\r\n", pid);
 	while (pid != EMPTY) {
 		process = &proctab[pid];
 		total += process->tickets;
 		pid = queuetab[pid].next;
 	}
-	// Generates a random ticket
-	winner = random(total);
-	// Finds the winning process based on the ticket number
+	*/
 	int i;
 	for (i = 0; i < NPROC; i++) {
 		process = &proctab[i];
-		counter += process->tickets;
-		if (counter > winner)
-			return i;
+		if (process->state == PRCURR || process->state == PRREADY) {
+			total += process->tickets;
+		}
 	}
+	// Generates a random ticket
+	winner = random(total);
+	// Finds the winning process based on the ticket number
+	
+	for (i = 0; i < NPROC; i++) {
+		process = &proctab[i];
+		if (process->state == PRCURR || process->state == PRREADY) {
+			counter += process->tickets;
+			if (counter > winner)
+				return i;
+		}
+	}
+	
 	/*
 	pid = firstid(readylist);
 	while (pid != EMPTY) {
