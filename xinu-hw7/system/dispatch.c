@@ -25,7 +25,7 @@
 
 ulong dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	
-ulong swi_opcode;
+    ulong swi_opcode;
     pcb *ppcb = &proctab[currpid];
     swi_opcode = ppcb->swaparea[CTX_A7];
     if((long)cause > 0) {
