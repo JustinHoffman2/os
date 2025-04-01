@@ -61,7 +61,8 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 	
     /* Initialize stack with accounting block. */
     saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong)); // Added for project 7
-	ulong top  = saddr; // Oliver said to add this
+	ulong top = ulong(saddr) +sizeof(ulong); // Oliver said to add this need to add what was just lost
+	ulong topoffset = saddr;
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
@@ -81,7 +82,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
     // TODO: Initialize process context.
 
     	ppcb->ctx[CTX_RA] = (ulong)userret;
-	ppcb->ctx[CTX_SP] = (ulong)PROCSTACKVADDR + PAGE_SIZE - (top - (ulong)saddr);
+	ppcb->ctx[CTX_SP] = (ulong)PROCSTACKVADDR + PAGE_SIZE - (top - (ulong)saddr);//pay attention to this line per brylow 
 	ppcb->ctx[CTX_PC] = (ulong)funcaddr;
 
 	ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
