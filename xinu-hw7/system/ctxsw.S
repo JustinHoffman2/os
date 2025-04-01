@@ -30,7 +30,7 @@ ctxsw:
 
 // TODO: Save process state, including at least the 
 //	callee-save ("non-volatile") registers.
-	
+	/*
 	sd	s0,	CTX_S0*8(a0)
 	sd      s1,     CTX_S1*8(a0)
 	sd      s2,     CTX_S2*8(a0)
@@ -84,6 +84,52 @@ ctxsw:
 
 	ld	a1,	CTX_A1*8(a1) // done last to overwrite a1
 
+*/
+
+// CHAT
+# Save old context
+    sd ra, CTX_RA*8(a0)
+    sd sp, CTX_SP*8(a0)
+    sd s0, CTX_S0*8(a0)
+    sd s1, CTX_S1*8(a0)
+    sd s2, CTX_S2*8(a0)
+    sd s3, CTX_S3*8(a0)
+    sd s4, CTX_S4*8(a0)
+    sd s5, CTX_S5*8(a0)
+    sd s6, CTX_S6*8(a0)
+    sd s7, CTX_S7*8(a0)
+    sd s8, CTX_S8*8(a0)
+    sd s9, CTX_S9*8(a0)
+    sd s10, CTX_S10*8(a0)
+    sd s11, CTX_S11*8(a0)
+    
+    # Save the return address as PC
+    sd ra, CTX_PC*8(a0)
+    
+    # Move SATP value to a safe register (s11 is already saved)
+    mv t2, a2
+    
+    # Restore new context (careful with a0/a1)
+    ld sp, CTX_SP*8(a1)
+    ld s0, CTX_S0*8(a1)
+    ld s1, CTX_S1*8(a1)
+    ld s2, CTX_S2*8(a1)
+    ld s3, CTX_S3*8(a1)
+    ld s4, CTX_S4*8(a1)
+    ld s5, CTX_S5*8(a1)
+    ld s6, CTX_S6*8(a1)
+    ld s7, CTX_S7*8(a1)
+    ld s8, CTX_S8*8(a1)
+    ld s9, CTX_S9*8(a1)
+    ld s10, CTX_S10*8(a1)
+    ld ra, CTX_RA*8(a1)
+    
+    # Get PC and compare with RA
+    ld t0, CTX_PC*8(a1)
+    ld a0, CTX_A0*8(a1)
+    ld a1, CTX_A1*8(a1)
+
+// CHAT
 
 // TODO: Jump to next function.
 //	Note: there are two important values at play here --
