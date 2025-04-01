@@ -61,8 +61,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 	
     /* Initialize stack with accounting block. */
     saddr = (ulong*)(((ulong)saddr) + PAGE_SIZE - sizeof(ulong)); // Added for project 7
-	ulong top = ulong(saddr) +sizeof(ulong); // Oliver said to add this need to add what was just lost
-	ulong topoffset = saddr;
+    ulong top = (ulong)saddr +sizeof(ulong); // Oliver said to add this need to add what was just lost
     *saddr = STACKMAGIC;
     *--saddr = pid;
     *--saddr = ppcb->stklen;
