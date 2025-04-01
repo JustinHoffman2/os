@@ -82,7 +82,7 @@ pid_typ lottery(void) {
 		process = &proctab[i];
 		counter += process->tickets;
 		if (counter > winner)
-			break;
+			return i;
 	}
 	/*
 	pid = firstid(readylist);
@@ -94,5 +94,5 @@ pid_typ lottery(void) {
 		pid = queuetab[pid].next;
 	}
 	*/
-	return pid;
+	return SYSERR;
 }
