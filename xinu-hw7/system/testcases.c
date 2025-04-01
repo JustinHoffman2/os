@@ -75,6 +75,41 @@ int test_usernone(void) {
 /**
  * testcases - called after initialization completes to test things.
  */
+void printpcb(int pid)
+{
+    pcb *ppcb = NULL;
+
+    /* Using the process ID, access it in the PCB table. */
+    ppcb = &proctab[pid];
+
+    /* Printing PCB */
+    kprintf("Process name		  : %s \r\n", ppcb->name);
+
+    switch (ppcb->state)
+    {
+    case PRFREE:
+        kprintf("State of the process	  : FREE \r\n");
+        break;
+    case PRCURR:
+        kprintf("State of the process 	  : CURRENT \r\n");
+        break;
+    case PRSUSP:
+        kprintf("State of the process	  : SUSPENDED \r\n");
+        break;
+    case PRREADY:
+        kprintf("State of the process	  : READY \r\n");
+        break;
+    default:
+        kprintf("ERROR: Process state not correctly set!\r\n");
+        break;
+    }
+
+    /* Print PCB contents and registers */
+    kprintf("Base of run time stack    : 0x%08X \r\n", ppcb->stkbase);
+    kprintf("Stack length of process   : %8u \r\n", ppcb->stklen);
+    kprintf("Stack pointer	       : %lx \r\n", ppcb->ctx[CTX_SP]);
+}
+
 void testcases(void)
 {
 	uchar c;
