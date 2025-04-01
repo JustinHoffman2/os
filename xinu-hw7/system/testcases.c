@@ -133,8 +133,8 @@ void testcases(void)
 			
 			pid_typ newPid = create((void *)test_usernone, INITSTK, 100, "test_usernone", 0);
 			printPageTable(proctab[newPid].pagetable);
-
-			ready(newPid, RESCHED_YES);
+			printpcb(newPid);
+			//ready(newPid, RESCHED_YES);
 			break;
 		case '1':
 			// TODO: Write a testcase that demonstrates a user
