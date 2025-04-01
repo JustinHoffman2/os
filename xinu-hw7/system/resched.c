@@ -77,6 +77,14 @@ pid_typ lottery(void) {
 	// Generates a random ticket
 	winner = random(total);
 	// Finds the winning process based on the ticket number
+	int i;
+	for (i = 0; i < NPROC; i++) {
+		process = &proctab[i];
+		counter += process->tickets;
+		if (counter > winner)
+			break;
+	}
+	/*
 	pid = firstid(readylist);
 	while (pid != EMPTY) {
 		process = &proctab[pid];
@@ -85,5 +93,6 @@ pid_typ lottery(void) {
 			break;
 		pid = queuetab[pid].next;
 	}
+	*/
 	return pid;
 }
