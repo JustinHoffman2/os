@@ -3,8 +3,8 @@
  * @provides mapPage, mapAddressRange
  *
  * Modified by:
- *
- * TA-BOT:MAILTO
+ * Justin Hoffman & Luke Bondi
+ * TA-BOT:MAILTO justin.hoffman@marquette.edu
  */
 /* Embedded Xinu, Copyright (C) 2013, 2025.  All rights reserved. */
 

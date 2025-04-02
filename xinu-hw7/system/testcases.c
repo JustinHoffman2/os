@@ -67,8 +67,30 @@ void printPageTable(pgtbl pagetable)
 int test_usernone(void) {
 	kprintf("Test of user_none\r\n");
 	user_none();
-	pcb *ppcb = &proctab[currpid];
-	printPageTable(ppcb->pagetable);
+	return 1;
+}
+
+int test_usermem(void) {
+	kprintf("user attempting to overwrite the _kernsp...\r\n");
+	_kernsp = (ulong *)0xABBBA;
+	return 1;
+}
+
+int test_userkern(void) {
+	pcb *main;
+	main = &proctab[0];
+	kprintf("user attempts to read the Main Stack Pointer...\r\n");
+	kprintf("Main SP: %lX\r\n", main->ctx[CTX_SP]);
+	kprintf("user attempting to write to the Main Stack Pointer...\r\n");
+	main->ctx[CTX_SP] = main->ctx[CTX_SP] << 22;
+	kprintf("Main SP after trying to write: %lX\r\n", main->ctx[CTX_SP]);
+	return 1;
+}
+
+int test_usernull(void) {
+	int *ptr = NULL;
+	kprintf("user attempting to dereference a null pointer...\r\n");
+	*ptr = 21;
 	return 1;
 }
 
@@ -121,9 +143,9 @@ void testcases(void)
 	kprintf("0) user process & page table\r\n");
 	kprintf("1) user process memory access\r\n");
 	kprintf("2) user process read kernel, not write\r\n");
-	kprintf("3)\r\n");
+	kprintf("3) test NULL Pointer Exception\r\n");
 	kprintf("4) Test page table print\r\n");
-
+	kprintf("\r\n");
 	c = kgetc();
 	switch (c)
 	{
@@ -132,24 +154,29 @@ void testcases(void)
 			// and prints out it's page table
 			
 			pid_typ newPid = create((void *)test_usernone, INITSTK, 100, "test_usernone", 0);
+			ready(newPid, RESCHED_YES);
 			printPageTable(proctab[newPid].pagetable);
-			printpcb(newPid);
-			//ready(newPid, RESCHED_YES);
 			break;
 		case '1':
 			// TODO: Write a testcase that demonstrates a user
 			// process cannot access certain areas of memory
+			
+			ready(create((void *)test_usermem, INITSTK, 100, "test_usermem", 0), RESCHED_YES);
 			break;
 		case '2':
 			// TODO: Write a testcase that demonstrates a user
 			// process can read kernel variables but cannot write
 			// to them
+			
+			ready(create((void *)test_userkern, INITSTK, 100, "test_userkern", 0), RESCHED_YES);
 			break;
 		case '3':
 			// TODO: Extra credit! Add handling in xtrap to detect
 			// and print out a Null Pointer Exception.  Write a
 			// testcase that demonstrates your OS can detect a
 			// Null Pointer Exception.
+			
+			ready(create((void *)test_usernull, INITSTK, 100, "test_userkern", 0), RESCHED_YES);
 			break;
 		case '4':
 			pgtbl table;
