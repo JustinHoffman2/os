@@ -65,8 +65,8 @@ void printPageTable(pgtbl pagetable)
 }
 
 int test_usernone(void) {
-	kprintf("Test of user_none\r\n");
-	user_none();
+	kprintf("Test of user_putc\r\n");
+	user_putc(0, 'E');
 	return 1;
 }
 
