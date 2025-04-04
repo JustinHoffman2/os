@@ -28,13 +28,16 @@ ulong dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
     ulong swi_opcode;
     pcb *ppcb = &proctab[currpid];
     swi_opcode = ppcb->swaparea[CTX_A7];
+    int result;
     if((long)cause > 0) {
         cause = cause << 1;
         cause = cause >> 1;
 	
 	if ((long)cause == E_ENVCALL_FROM_UMODE)
        	{
-		ppcb->swaparea[CTX_A0] = syscall_dispatch(swi_opcode, (ulong*)ppcb->swaparea[CTX_A0]);
+		result = syscall_dispatch(swi_opcode, (ulong*)ppcb->swaparea[CTX_A0]);
+		ppcb = &proctab[currpid];
+		ppcb->swaparea[CTX_A0] = result;
 		set_sepc((ulong)program_counter + (ulong)4);
 	}
        	else
@@ -75,6 +78,7 @@ ulong dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
         	}
     	}
     }
+    ppcb = &proctab[currpid];
     return MAKE_SATP(currpid, ppcb->pagetable);
 }
 

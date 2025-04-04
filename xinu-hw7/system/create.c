@@ -86,7 +86,7 @@ syscall create(void *funcaddr, ulong ssize, uint priority, char *name, ulong nar
 	ppcb->ctx[CTX_PC] = (ulong)funcaddr;
 
 	ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl); // Initializes swap area SATP register (HW7)
-	ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp; // Initializes swap area SP register (HW7)
+	//ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp; // Initializes swap area SP register (HW7)
 	
 	va_start(ap, nargs);
     //

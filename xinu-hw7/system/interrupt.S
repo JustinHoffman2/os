@@ -57,7 +57,8 @@ interrupt:
    
     // Load kernel page table
     ld a0, CTX_KERNSATP*8(t0)	
-    ld sp, CTX_KERNSP*8(t0)
+    ld t7, CTX_KERNSP*8(t0)
+    sub	sp, sp t7
     // call set_satp
     sfence.vma zero, zero
     csrw satp, a0

@@ -52,7 +52,7 @@ pgtbl vm_userinit(int pid, page stack)
     page swaparea = pgalloc();
     ppcb->swaparea = swaparea;
     ppcb->swaparea[CTX_KERNSATP] = (ulong)MAKE_SATP(0, _kernpgtbl);
-    ppcb->swaparea[CTX_KERNSP] = (ulong)_kernsp;
+    ppcb->swaparea[CTX_KERNSP] = (ulong)PROCSTACKVADDR - (ulong)stack;
     mapPage(pagetable, SWAPAREAVADDR, (ulong)swaparea,
             PTE_R | PTE_W | PTE_U | PTE_A | PTE_D);
 
