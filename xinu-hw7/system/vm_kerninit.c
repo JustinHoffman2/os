@@ -54,6 +54,5 @@ pgtbl vm_kerninit(void)
 
     // Switch to the kernel page table now
     set_satp(MAKE_SATP(0, pagetable));
-    _kernsp = (ulong *)(memheap - PAGE_SIZE - PAGE_SIZE);
     return pagetable;
 }

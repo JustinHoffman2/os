@@ -71,8 +71,10 @@ int test_usernone(void) {
 }
 
 int test_usermem(void) {
-	kprintf("user attempting to overwrite the _kernsp...\r\n");
-	_kernsp = (ulong *)0xABBBA;
+	kprintf("Trying to read another processes page table...\r\n");
+	pcb *ppcb;
+	ppcb = &proctab[currpid+1];
+	printPageTable(ppcb->pagetable);
 	return 1;
 }
 
@@ -154,14 +156,17 @@ void testcases(void)
 			// and prints out it's page table
 			
 			pid_typ newPid = create((void *)test_usernone, INITSTK, 100, "test_usernone", 0);
-			ready(newPid, RESCHED_YES);
 			printPageTable(proctab[newPid].pagetable);
+	
+			ready(newPid, RESCHED_YES);
 			break;
 		case '1':
 			// TODO: Write a testcase that demonstrates a user
 			// process cannot access certain areas of memory
 			
-			ready(create((void *)test_usermem, INITSTK, 100, "test_usermem", 0), RESCHED_YES);
+			pid_typ p1 = create((void *)test_usermem, INITSTK, 100, "test_usermem", 0);
+			create((void *)test_usermem, INITSTK, 100, "test_usermem1", 0);
+			ready(p1, RESCHED_YES);
 			break;
 		case '2':
 			// TODO: Write a testcase that demonstrates a user

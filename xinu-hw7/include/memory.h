@@ -51,7 +51,6 @@ extern void *_ctxswe;           /* end of ctxsw                       */
 extern void *_interrupts;       /* start of interrupts                */
 extern void *_interrupte;       /* end of interrupts                  */
 extern ulong *_kernpgtbl;	/* kernel page table                  */
-extern ulong *_kernsp;          /* kernel stack pointer               */
 
 /* Memory function prototypes */
 void *getmem(uint nbytes);

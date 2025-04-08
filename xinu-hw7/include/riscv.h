@@ -30,6 +30,7 @@
 #define INTERRUPTVADDR	0x3FFFFFF000    // truncpage(MAXVIRTADDR - 1*PAGE_SIZE)
 #define SWAPAREAVADDR	0x3FFFFFE000    // truncpage(MAXVIRTADDR - 2*PAGE_SIZE)
 #define PROCSTACKVADDR	0x3FFFFFD000    // truncpage(MAXVIRTADDR - 3*PAGE_SIZE)
+#define PROCHEAPVADDR   0x2000000000
 
 #define WATCHDOG_CONF   0x00020500B4
 
@@ -77,6 +78,6 @@
 #define CTX_T6 31
 
 #define CTX_KERNSATP 32
-#define CTX_KERNSP 33
+#define CTX_SPOFFSET 33
 
 #endif                          /* _RISCV_H_ */

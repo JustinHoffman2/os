@@ -35,7 +35,7 @@ ulong dispatch(ulong cause, ulong val, ulong *frame, ulong *program_counter) {
 	
 	if ((long)cause == E_ENVCALL_FROM_UMODE)
        	{
-		result = syscall_dispatch(swi_opcode, (ulong*)ppcb->swaparea[CTX_A0]);
+		result = syscall_dispatch(swi_opcode, (ulong*)&ppcb->swaparea[CTX_A0]);
 		ppcb = &proctab[currpid];
 		ppcb->swaparea[CTX_A0] = result;
 		set_sepc((ulong)program_counter + (ulong)4);

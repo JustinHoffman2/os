@@ -26,7 +26,6 @@ void *memheap;                  /* Bottom of heap (top of O/S stack)     */
 ulong cpuid;                    /* Processor id                          */
 
 ulong *_kernpgtbl;              /* Kernel page table address             */
-ulong *_kernsp;                 /* Kernel stack pointer                  */
 struct pgmemblk *pgfreelist = NULL;
                                 /* Linked list of physical free pages    */
 uint pgtbl_nents = 0;           /* Number of pages in the entire system  */
