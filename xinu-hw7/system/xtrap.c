@@ -30,9 +30,9 @@ char *trap_names[] = {
 void xtrap(ulong *frame, ulong cause, ulong address, ulong *pc)
 {
     /* If not an interrupt or syscall, fall through to generic exception handler */
-    int nullCheck = 0;
-    if ((cause == 12 || cause == 15) && address == 0) nullCheck = 1;
-    kprintf("\r\n\r\nXINU Exception [%s]\r\n", nullCheck == 0 ? trap_names[cause] : "NULL Pointer Exception"); // Added ternary operator to handle a NULL pointer exception
+    char *exception = trap_names[cause];
+    if ((cause == 12 || cause == 13 ||cause == 15) && address == 0) exception = "NULL Pointer Exception"; // Added to detect a null pointer exception
+    kprintf("\r\n\r\nXINU Exception [%s]\r\n", exception);
     kprintf("Faulting code: 0x%016lX\r\n", pc);
 
     if (address != 0){
