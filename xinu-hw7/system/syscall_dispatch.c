@@ -120,7 +120,6 @@ syscall sc_putc(ulong *args)
 {
     int descrp = SCARG(int, args);
     char character = SCARG(char, args);
-
     if (0 == descrp)
         return kputc(character);
     return SYSERR;
