@@ -33,7 +33,6 @@ struct syscall_info
 #define SYSCALL_PTJOIN     14 /**< PThread join                     */
 #define SYSCALL_PTLOCK     15 /**< PThread lock                     */
 #define SYSCALL_PTUNLOCK   16 /**< PThread unlock                   */
-#define SYSCALL_INCHEAP    17 /**< Increase the heap of the process */
 extern const struct syscall_info syscall_table[];
 extern int nsyscalls;
 
@@ -43,6 +42,5 @@ syscall user_yield(void);
 syscall user_getc(int descrp);
 syscall user_putc(int descrp, char character);
 syscall user_kill(void);
-ulong user_incheap(ulong);
 
 #endif                          /* __SYSCALL_H__ */

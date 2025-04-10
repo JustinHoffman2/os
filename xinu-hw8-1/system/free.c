@@ -14,7 +14,7 @@
  * @param ptr
  *      A pointer to the memory block to free.
  */
-void free(void *ptr)
+syscall free(void *ptr)
 {
     struct memblock *block;
 
@@ -24,4 +24,5 @@ void free(void *ptr)
      *      3) call freemem on the block with its length
      */
 
+    return OK;
 }

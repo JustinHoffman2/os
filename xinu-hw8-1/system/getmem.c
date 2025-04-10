@@ -21,7 +21,7 @@
  *      The returned pointer is guaranteed to be 8-byte aligned.  Free the block
  *      with memfree() when done with it.
  */
-void *getmem(uint nbytes)
+void *getmem(ulong nbytes)
 {
     register memblk *prev, *curr, *leftover;
 
@@ -31,8 +31,12 @@ void *getmem(uint nbytes)
     }
 
     /* round to multiple of memblock size   */
-    nbytes = (uint)roundmb(nbytes);
-    struct memhead *head = (memhead *)proctab[currpid].heaptop;
+    nbytes = (ulong)roundmb(nbytes);
+    struct memhead *head = (memhead *)PROCHEAPADDR;
+
+    memblock *current = head->head;
+    
+
 
     /* TODO:
      *      - Traverse through the freelist

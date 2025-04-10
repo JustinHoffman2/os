@@ -57,7 +57,6 @@ typedef struct pentry
     ulong tickets;      /**< priority in lottery scheduler           */
     pgtbl pagetable;    /**< process page table                      */
     ulong *swaparea;    /**< per-process swap area                   */
-    ulong *heaptop;     /**< per-process heap area                   */
 } pcb;
 
 /* process initialization constants */

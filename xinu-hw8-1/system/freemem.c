@@ -21,7 +21,7 @@
  *      ::OK on success; ::SYSERR on failure.  This function can only fail
  *      because of memory corruption or specifying an invalid memory block.
  */
-syscall freemem(void *memptr, uint nbytes)
+syscall freemem(void *memptr, ulong nbytes)
 {
     register struct memblock *block, *next, *prev;
     struct memhead *head = NULL;
@@ -29,14 +29,14 @@ syscall freemem(void *memptr, uint nbytes)
 
     /* make sure block is in heap */
     if ((0 == nbytes)
-        || ((ulong)memptr < (ulong)proctab[currpid].heaptop))
+        || ((ulong)memptr < (ulong)PROCHEAPADDR))
     {
         return SYSERR;
     }
 
-    head = (struct memhead *)proctab[currpid].heaptop;
+    head = (struct memhead *)PROCHEAPADDR;
     block = (struct memblock *)memptr;
-    nbytes = (uint)roundmb(nbytes);
+    nbytes = (ulong)roundmb(nbytes);
 
     /* TODO:
      *      - Find where the memory block should
