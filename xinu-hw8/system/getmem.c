@@ -34,6 +34,10 @@ void *getmem(ulong nbytes)
     nbytes = (ulong)roundmb(nbytes);
     struct memhead *head = (memhead *)PROCHEAPADDR;
 
+    memblock *current = head->head;
+    
+
+
     /* TODO:
      *      - Traverse through the freelist
      *        to find a block that's suitable 
