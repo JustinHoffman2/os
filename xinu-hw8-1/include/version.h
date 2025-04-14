@@ -1,1 +1,0 @@
-#define VERSION "(Embedded Xinu) (nezhaobj) #108 (lbondi1@frontios.mscsnet.mu.edu) Thu Apr 10 04:42:49 PM CDT 2025"
