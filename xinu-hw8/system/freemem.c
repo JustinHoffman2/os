@@ -23,7 +23,7 @@
  */
 syscall freemem(void *memptr, uint nbytes)
 {
-    register struct memblock *block, *next, *prev;
+    register struct memblock *block, *next, *prev, *curr;
     struct memhead *head = NULL;
     ulong top;
 
@@ -37,6 +37,40 @@ syscall freemem(void *memptr, uint nbytes)
     head = (struct memhead *)proctab[currpid].heaptop;
     block = (struct memblock *)memptr;
     nbytes = (uint)roundmb(nbytes);
+    
+    next = head->head;
+    prev = NULL;
+
+    while(next < block){
+	prev = next;
+	next = next -> next;	
+    }
+    top = (ulong)prev + prev->length;
+    if((ulong)block<top){
+
+	    return SYSERR;
+    }
+    top = (ulong)block + block->length;
+    else if(top> (ulong)next){
+	    return SYSERR;
+    }
+    else{
+    	prev -> next = block;
+    	block -> next = next;
+    }
+
+    top = (ulong)prev + prev->length;
+    if(top == (ulong)block){
+	    prev->length = prev->length + block->length;
+	    prev->next = block->next;
+    }
+    top = (ulong)block + block->length;
+    if(top == (ulong)next){
+	    block->length = block->length + prev->length;
+	    block->next = prev->next;
+    }
+
+    
 
     /* TODO:
      *      - Find where the memory block should
