@@ -42,6 +42,35 @@ void *getmem(uint nbytes)
      *        with the request to add more pages to our process heap
      *      - return memory address if successful
      */
+    prev = NULL;
+    curr = head->head;
+	
+    while(curr != NULL) {
+    	
+        if (curr->length == nbytes + sizeof(memblk)) {
+            if (prev == NULL)
+                head->head = curr->next;
+	    else
+	    	prev->next = curr->next;
+            return (void *)((ulong)curr + sizeof(memblk));
+        }
+        
+        if (curr->length > nbytes + sizeof(memblk)) {
+            leftover = (ulong)curr + nbytes;
+            leftover->length = curr->length - nbytes;
+            leftover->next = curr->next;
+            if (prev == NULL)
+                head->head = leftover;
+            else
+                prev->next = leftover;
+            curr->length = nbytes + sizeof(memblk);
+            return (void *)((ulong)curr + sizeof(memblk));
+        }
 
-    return (void *)SYSERR;
+        prev = curr;
+        curr = curr->next;
+    }
+    
+    return user_incheap(nbytes);
+    //return (void *)SYSERR;
 }
