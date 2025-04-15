@@ -15,6 +15,8 @@
 /* This fake page table will allow you to test your printPageTable function
  * without having paging completely working.
  */
+
+void printfreelist();
 pgtbl createFakeTable(void){
 	pgtbl root = pgalloc();
 	pgtbl lvl1 = pgalloc();
@@ -95,7 +97,38 @@ int test_usernull(void) {
 	*ptr = 21;
 	return 1;
 }
+void mallocarray(){
 
+	kprintf("Free list before \r\n");
+	printfreelist();
+	int *array;
+	int n= 10;
+	array = (int*) malloc(n*sizeof(int));
+	for(int i = 0; i<n; i++){
+		array[i] = i + 1;
+		kprintf("%d\t%lx\r\n", array[i], &array[i]);
+
+	}
+	kprintf("Free list after \r\n");
+	printfreelist();
+}
+
+void printfreelist(){
+
+	register struct memblock *block;
+	struct memhead *head = NULL;
+
+	head = (struct memhead *)proctab[currpid].heaptop;
+
+	//kprintf("TOP");
+
+	block = head->head;
+	while(block != NULL){
+		kprintf("%lx:\r\n",block);
+		block = block->next;
+	} 
+	//kprintf("HI BOTTOM");
+}
 /**
  * testcases - called after initialization completes to test things.
  */
@@ -142,11 +175,11 @@ void testcases(void)
 
 	// TODO: Test your operating system!
 	
-	kprintf("0) user process & page table\r\n");
-	kprintf("1) user process memory access\r\n");
-	kprintf("2) user process read kernel, not write\r\n");
-	kprintf("3) test NULL Pointer Exception\r\n");
-	kprintf("4) Test page table print\r\n");
+	kprintf("0) test of malloc\r\n");
+	kprintf("1) print the free list\r\n");
+	//kprintf("2) user process read kernel, not write\r\n");
+	//kprintf("3) test NULL Pointer Exception\r\n");
+	//kprintf("4) Test page table print\r\n");
 	kprintf("\r\n");
 	c = kgetc();
 	switch (c)
@@ -155,18 +188,14 @@ void testcases(void)
 			// TODO: Write a testcase that creates a user process
 			// and prints out it's page table
 			
-			pid_typ newPid = create((void *)test_usernone, INITSTK, 100, "test_usernone", 0);
-			printPageTable(proctab[newPid].pagetable);
-	
-			ready(newPid, RESCHED_YES);
+			ready(create((void *)mallocarray, INITSTK, 100, "test_mallocarray", 0), RESCHED_YES);
 			break;
 		case '1':
-			// TODO: Write a testcase that demonstrates a user
-			// process cannot access certain areas of memory
-			
-			pid_typ p1 = create((void *)test_usermem, INITSTK, 100, "test_usermem", 0);
-			create((void *)test_usermem, INITSTK, 100, "test_usermem1", 0);
-			ready(p1, RESCHED_YES);
+			//
+			//TODO: print the free list.
+
+			kprintf("hi Switch statement\r\n");
+			ready(create((void *)printfreelist, INITSTK, 100, "test_printfreelist", 0), RESCHED_YES);
 			break;
 		case '2':
 			// TODO: Write a testcase that demonstrates a user

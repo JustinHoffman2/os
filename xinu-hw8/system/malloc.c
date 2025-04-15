@@ -43,5 +43,5 @@ void *malloc(ulong size)
       *      3) Set accounting info in pmem
       */
 
-    return (void *) pmem + sizeof(memblk);
+    return (void *) ((ulong)pmem + sizeof(memblk));
 }

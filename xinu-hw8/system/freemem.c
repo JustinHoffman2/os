@@ -51,7 +51,7 @@ syscall freemem(void *memptr, uint nbytes)
 	    return SYSERR;
     }
     top = (ulong)block + block->length;
-    else if(top> (ulong)next){
+    if(top> (ulong)next){
 	    return SYSERR;
     }
     else{
