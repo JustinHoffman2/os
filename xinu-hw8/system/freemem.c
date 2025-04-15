@@ -23,9 +23,10 @@
  */
 syscall freemem(void *memptr, uint nbytes)
 {
-    register struct memblock *block, *next, *prev, *curr;
+    register struct memblock *block, *next, *prev;
     struct memhead *head = NULL;
-    ulong top;
+    ulong prev_top;
+    ulong block_top;
 
     /* make sure block is in heap */
     if ((0 == nbytes)
