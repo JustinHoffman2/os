@@ -41,37 +41,40 @@ syscall freemem(void *memptr, uint nbytes)
     next = head->head;
     prev = NULL;
 
-    while(next < block){
-	prev = next;
-	next = next -> next;	
+    while (next != NULL && next < block) {
+        prev = next;
+        next = next -> next;	
     }
-    top = (ulong)prev + prev->length;
-    if((ulong)block<top){
 
+    prev_top = (ulong)prev + prev->length;
+    if ((ulong)block < prev_top)
 	    return SYSERR;
-    }
-    top = (ulong)block + block->length;
-    if(top> (ulong)next){
+
+    block_top = (ulong)block + block->length;
+    if (block_top > (ulong)next)
 	    return SYSERR;
-    }
-    else{
-    	prev -> next = block;
-    	block -> next = next;
+
+    if (prev != NULL)
+        prev->next = block;
+    block->next = next;
+
+    if (prev != NULL) {
+        prev_top = (ulong)prev + prev->length;
+        if (prev_top == (ulong)block) {
+            prev->length += block->length;
+            prev->next = block->next;
+            block = prev;
+        }
     }
 
-    top = (ulong)prev + prev->length;
-    if(top == (ulong)block){
-	    prev->length = prev->length + block->length;
-	    prev->next = block->next;
+    if (next != NULL) {
+        block_top = (ulong)block + block->length;
+        if (block_top == (ulong)next) {
+            block->length += next->length;
+            block->next = next->next;
+        }
     }
-    top = (ulong)block + block->length;
-    if(top == (ulong)next){
-	    block->length = block->length + prev->length;
-	    block->next = prev->next;
-    }
-
-    
-
+	
     /* TODO:
      *      - Find where the memory block should
      *        go back onto the freelist (based on address)
