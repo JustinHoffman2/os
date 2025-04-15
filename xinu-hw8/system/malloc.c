@@ -31,10 +31,9 @@ void *malloc(ulong size)
 	
 
     pmem = getmem(size + sizeof(memblk));
-    if(pmem == SYSERR){
+    if(pmem == SYSERR)
 	    return NULL;
-    }
-    pmem -> length = size + sizeof(memblk);
+    pmem->length = size + sizeof(memblk);
 
       /** TODO:
       *      1) Make room for accounting info
@@ -43,5 +42,5 @@ void *malloc(ulong size)
       *      3) Set accounting info in pmem
       */
 
-    return (void *) ((ulong)pmem + sizeof(memblk));
+    return (void *)((ulong)pmem + sizeof(memblk));
 }
