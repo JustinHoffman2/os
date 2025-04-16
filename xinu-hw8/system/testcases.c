@@ -23,9 +23,11 @@ void printfreelist(void){
 	head = (struct memhead *)proctab[currpid].heaptop;
 	block = head->head;
 	while(block != NULL){
-		kprintf("0x%lx:\r\n",block);
+		kprintf("0x%lX:\r\n",block);
 		block = block->next;
-	} 
+	}
+	kprintf("Length: %ld\r\n", head->length);
+	kprintf("Bound: %lX\r\n", head->bound);
 }
 
 void mallocarray(void) {
@@ -39,7 +41,6 @@ void mallocarray(void) {
 	for(int i = 0; i < n; i++){
 		array[i] = i + 1;
 		kprintf("%d\t%lx\r\n", array[i], &array[i]);
-
 	}
 	kprintf("Free list after free:\r\n");
 	free(array);
@@ -87,7 +88,7 @@ void testcases(void)
 	
 	kprintf("0) test of malloc\r\n");
 	kprintf("1) print the free list\r\n");
-	kprintf("2) limit test & memory leak\r\n");
+	kprintf("2) limit test\r\n");
 	kprintf("3) freemem compaction\r\n");
 	kprintf("\r\n");
 	c = kgetc();
@@ -101,7 +102,7 @@ void testcases(void)
 		case '1':
 			ready(create((void *)printfreelist, INITSTK, 100, "test_printfreelist", 0), RESCHED_YES);
 			break;
-		// Allocate & free as much memory as possible, check for memory leak
+		// Allocate & free as much memory as possible
 		case '2':
 
 			break;
