@@ -16,7 +16,7 @@
  * without having paging completely working.
  */
 
-void printfreelist();
+void printfreelist(void);
 pgtbl createFakeTable(void){
 	pgtbl root = pgalloc();
 	pgtbl lvl1 = pgalloc();
@@ -97,7 +97,7 @@ int test_usernull(void) {
 	*ptr = 21;
 	return 1;
 }
-void mallocarray(){
+void mallocarray(void){
 
 	kprintf("Free list before \r\n");
 	printfreelist();
@@ -113,7 +113,7 @@ void mallocarray(){
 	printfreelist();
 }
 
-void printfreelist(){
+void printfreelist(void){
 
 	register struct memblock *block;
 	struct memhead *head = NULL;
