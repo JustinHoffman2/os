@@ -45,31 +45,29 @@ syscall freemem(void *memptr, uint nbytes)
     while (next != NULL && next < block) {
         prev = next;
         next = next -> next;	
-    }
-
-    prev_top = (ulong)prev + prev->length;
-    if ((ulong)block < prev_top)
-	    return SYSERR;
-
-    block_top = (ulong)block + block->length;
-    if (block_top > (ulong)next)
-	    return SYSERR;
+    }       
 
     if (prev != NULL)
         prev->next = block;
     block->next = next;
-
+    block->length = nbytes;
+	
     if (prev != NULL) {
         prev_top = (ulong)prev + prev->length;
+	if ((ulong)block < prev_top)
+	    return SYSERR;
         if (prev_top == (ulong)block) {
             prev->length += block->length;
             prev->next = block->next;
             block = prev;
         }
-    }
+    } else
+	head->head = block;
 
     if (next != NULL) {
         block_top = (ulong)block + block->length;
+	if (block_top > (ulong)next)
+	    return SYSERR;
         if (block_top == (ulong)next) {
             block->length += next->length;
             block->next = next->next;
