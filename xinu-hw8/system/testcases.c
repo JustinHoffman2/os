@@ -22,12 +22,13 @@ void printfreelist(void){
 
 	head = (struct memhead *)proctab[currpid].heaptop;
 	block = head->head;
+	kprintf("\tAddress:\r\n");
 	while(block != NULL){
-		kprintf("0x%lX:\r\n",block);
+		kprintf("\t\t0x%lX\r\n",block);
 		block = block->next;
 	}
-	kprintf("Length: %ld\r\n", head->length);
-	kprintf("Bound: %lX\r\n", head->bound);
+	kprintf("\tLength: %ld\r\n", head->length);
+	kprintf("\tBound: %lX\r\n", head->bound);
 }
 
 void mallocarray(void) {
@@ -44,6 +45,56 @@ void mallocarray(void) {
 	}
 	kprintf("Free list after free:\r\n");
 	free(array);
+	printfreelist();
+}
+
+void limittest(void) {
+	kprintf("More malloc test\r\n");
+	kprintf("Free list before array malloc:\r\n");
+        printfreelist();
+        
+	int *array;
+        array = (int*) malloc(1000*sizeof(int));
+        kprintf("Free list after array malloc:\r\n");
+        printfreelist();
+	
+	char *str;
+	str = (char*)malloc(10*sizeof(char));
+	kprintf("Free list after char malloc:\r\n");
+	printfreelist();
+	
+	kprintf("Free list after char free:\r\n");
+	free(str);
+	printfreelist();
+
+        kprintf("Free list after array free:\r\n");
+        free(array);
+        printfreelist();
+}
+
+void compaction(void) {
+	kprintf("Compaction Test\r\n");
+        kprintf("Before malloc:\r\n");
+        printfreelist();
+        char *str1;
+	char *str2;
+	char *str3;
+        str1 = (char *)malloc(50*sizeof(char));
+        str2 = (char *)malloc(20*sizeof(char));
+	str3 = (char *)malloc(20*sizeof(char));
+	kprintf("After malloc:\r\n");
+	printfreelist();
+
+        kprintf("After str2 free:\r\n");
+	free(str2);
+	printfreelist();
+
+        kprintf("After str1 free:\r\n");
+        free(str1);
+        printfreelist();
+
+	kprintf("After str3 free:\r\n");
+	free(str3);
 	printfreelist();
 }
 /**
@@ -104,11 +155,11 @@ void testcases(void)
 			break;
 		// Allocate & free as much memory as possible
 		case '2':
-
+			ready(create((void *)limittest, INITSTK, 100, "test_limittest", 0), RESCHED_YES);
 			break;
 		// Check freemem compaction
 		case '3':
-
+			ready(create((void *)compaction, INITSTK, 100, "test_compaction", 0), RESCHED_YES);
 			break;
 		default:
 			break;
