@@ -51,21 +51,28 @@ void *getmem(uint nbytes)
                 head->head = curr->next;
 	    else
 	    	prev->next = curr->next;
-            return (void *)curr;
+            curr->next = NULL;
+	    return (void *)curr;
         }
         if (curr->length > nbytes) {
-            leftover = (ulong)curr + nbytes;
+            leftover = (memblk *)((ulong)curr + nbytes);
             leftover->length = curr->length - nbytes;
             leftover->next = curr->next;
             if (prev == NULL)
                 head->head = leftover;
             else
                 prev->next = leftover;
+	    curr->next = NULL;
             return (void *)curr;
         }
         prev = curr;
         curr = curr->next;
     }
-    return user_incheap(nbytes);
-    //return (void *)SYSERR;
+    void *newmem = user_incheap(nbytes);
+    if (newmem == SYSERR)
+	    return (void *)SYSERR;
+    curr = (memblk *)newmem;
+    curr->length = nbytes;
+    curr->next = NULL;
+    return (void *)curr;
 }
