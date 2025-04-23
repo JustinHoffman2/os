@@ -52,6 +52,7 @@ void *getmem(uint nbytes)
 	    else
 	    	prev->next = curr->next;
             curr->next = NULL;
+	    head->length -= nbytes;
 	    return (void *)curr;
         }
         if (curr->length > nbytes) {
@@ -63,6 +64,7 @@ void *getmem(uint nbytes)
             else
                 prev->next = leftover;
 	    curr->next = NULL;
+	    head->length -= nbytes;
             return (void *)curr;
         }
         prev = curr;

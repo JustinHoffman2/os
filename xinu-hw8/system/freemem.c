@@ -73,7 +73,8 @@ syscall freemem(void *memptr, uint nbytes)
             block->next = next->next;
         }
     }
-	
+    head->length += nbytes;
+        
     /* TODO:
      *      - Find where the memory block should
      *        go back onto the freelist (based on address)
