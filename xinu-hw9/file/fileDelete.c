@@ -26,7 +26,7 @@ devcall fileDelete(int fd)
 		return SYSERR;
 	}
 
-	Struct dentry *phw = supertab->sb_disk;
+	struct dentry *phw = supertab->sb_disk;
 	int diskfd = phw - devtab;
 
 	wait(supertab->sb_dirlock);
