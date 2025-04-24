@@ -31,7 +31,7 @@ devcall fileDelete(int fd)
 
 	wait(supertab->sb_dirlock);
 
-	if((supertab->sb_dirlst == NULL) || (filetab[fd].fn_state & FILE_OPEN) | (filetab[fd].fn_state & FILE_FREE))
+	if((supertab->sb_dirlst == NULL) || (filetab[fd].fn_state & (FILE_OPEN | FILE_FREE)))
 	{
 		return SYSERR;
 	}
