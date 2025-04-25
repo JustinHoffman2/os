@@ -43,23 +43,20 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 
 	if(fbc == NULL) //case 1
 	{
-
 		struct fbcnode *newfbc = (fbcnode *)malloc(sizeof(fbcnode));
-
 		newfbc->fbc_blocknum = block;
-		newfbc->count = 0;
+		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
 		psuper->sb_freelist = newfbc;
 
 		//call swizzle somewhere
+		signal(psuper->sb_freelock);
+		return OK;
 		//signal the lock and then return 
 		//for all cases do steps 1 and 2 
 		//need to set up the super block 
 		//other than that set up very similar to case 2 
-
-
 	}
-
 
 	while(fbc->next != NULL)
 	{
@@ -74,11 +71,13 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
 		fbc->next = newfbc;
+
+		//call swizzle
+		signal(psuper->sb_freelock);
+		return OK;
 	}
-
-
-
-
 
     return SYSERR;
 }
+
+//swizzle(struct fbcnode fbc)
