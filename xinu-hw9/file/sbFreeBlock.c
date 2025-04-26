@@ -80,4 +80,6 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
     return SYSERR;
 }
 
-//swizzle(struct fbcnode fbc)
+swizzle(struct fbcnode fbc) {
+	
+}
