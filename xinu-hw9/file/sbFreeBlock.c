@@ -33,11 +33,11 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		return SYSERR;
 	}
 
-	if(block > 0 && block <= DISKBLOCKTOTAL)
+	if(block <= 0 && block > DISKBLOCKTOTAL)
 	{
 	       return SYSERR;
 	}	       
-	diskfd = phw - devtab; //devtab is device table
+	diskfd = phw - devtab;
 	wait(psuper->sb_freelock);
 	struct fbcnode *fbc = psuper->sb_freelst;
 
@@ -76,10 +76,16 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		signal(psuper->sb_freelock);
 		return OK;
 	}
+	
+	//case 3
+	fbc->fbc_free[fbc_count] = block;
+	fbc->fbc_count++;
+	//write to disk
 
     return SYSERR;
 }
 
 swizzle(struct fbcnode fbc) {
+	struct fbcnode *fbc2 = fbc->fbc_next;
 	
 }
