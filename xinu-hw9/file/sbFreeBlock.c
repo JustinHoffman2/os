@@ -23,7 +23,7 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 
 	int diskfd;
 	struct dentry *phw;
-	if(superblock == NULL)
+	if(psuper == NULL)
 	{
 		return SYSERR;
 	}
@@ -33,21 +33,21 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		return SYSERR;
 	}
 
-	if(block > 0 && <= DISKBLOCKTOTAL)
+	if(block > 0 && block <= DISKBLOCKTOTAL)
 	{
 	       return SYSERR;
 	}	       
 	diskfd = phw - devtab; //devtab is device table
 	wait(psuper->sb_freelock);
-	struct fbcnode *fbc = psuper->sb_freelist;
+	struct fbcnode *fbc = psuper->sb_freelst;
 
 	if(fbc == NULL) //case 1
 	{
-		struct fbcnode *newfbc = (fbcnode *)malloc(sizeof(fbcnode));
+		struct fbcnode *newfbc = (struct fbcnode *)malloc(sizeof(struct fbcnode));
 		newfbc->fbc_blocknum = block;
 		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
-		psuper->sb_freelist = newfbc;
+		psuper->sb_freelst = newfbc;
 
 		//call swizzle somewhere
 		signal(psuper->sb_freelock);
@@ -58,19 +58,19 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		//other than that set up very similar to case 2 
 	}
 
-	while(fbc->next != NULL)
+	while(fbc->fbc_next != NULL)
 	{
-		fbc = fbc->next;
+		fbc = fbc->fbc_next;
 	}
 
 	if(fbc->fbc_count == FREEBLOCKMAX || fbc->fbc_count == 0) //case 2
 	{
 		//malloc to grab another block of space freeblock struct
-		struct fbcnode *newfbc = (fbcnode *)malloc(sizeof(fbcnode));
+		struct fbcnode *newfbc = (struct fbcnode *)malloc(sizeof(struct fbcnode));
 		newfbc->fbc_blocknum = block;
 		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
-		fbc->next = newfbc;
+		fbc->fbc_next = newfbc;
 
 		//call swizzle
 		signal(psuper->sb_freelock);
