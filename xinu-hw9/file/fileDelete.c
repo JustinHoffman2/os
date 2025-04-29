@@ -50,7 +50,7 @@ devcall fileDelete(int fd)
 	seek(diskfd, supertab->sb_dirlst->db_blocknum);
 	int result = write(diskfd, supertab->sb_dirlst, sizeof(struct dirblock));
 
-	signal(supertab->dirlock);
+	signal(supertab->sb_dirlock);
 
 	if(result == SYSERR)
 	{

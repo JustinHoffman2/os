@@ -2,9 +2,9 @@
 /* Copyright (C) 2008, Marquette University.  All rights reserved. */
 /*                                                                 */
 /* Modified by                                                     */
-/*                                                                 */
+/* Justin Hoffman                                                  */
 /* and                                                             */
-/*                                                                 */
+/* Luke Bondi                                                      */
 /*                                                                 */
 
 #include <xinu.h>
@@ -13,6 +13,8 @@
  * sbFreeBlock - Add a block back into the free list of disk blocks.
  *------------------------------------------------------------------------
  */
+int swizzle(struct fbcnode *, int);
+
 devcall sbFreeBlock(struct superblock *psuper, int block)
 {
     // TODO: Add the block back into the filesystem's list of
@@ -49,7 +51,10 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		newfbc->fbc_next = NULL;
 		psuper->sb_freelst = newfbc;
 
-		//call swizzle somewhere
+		if (swizzle(fbc, diskfd) == NULL)
+		{
+			return SYSERR;
+		}
 		signal(psuper->sb_freelock);
 		return OK;
 		//signal the lock and then return 
@@ -72,20 +77,39 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		newfbc->fbc_next = NULL;
 		fbc->fbc_next = newfbc;
 
-		//call swizzle
+		if (swizzle(fbc, diskfd) == NULL)
+		{
+			return SYSERR;
+		}
 		signal(psuper->sb_freelock);
 		return OK;
 	}
 	
 	//case 3
-	fbc->fbc_free[fbc_count] = block;
+	fbc->fbc_free[fbc->fbc_count] = block;
 	fbc->fbc_count++;
-	//write to disk
-
-    return SYSERR;
+	if (swizzle(fbc, diskfd) == NULL)
+	{
+		return SYSERR;
+	}
+	return OK;
 }
 
-swizzle(struct fbcnode fbc) {
+int swizzle(struct fbcnode *fbc, int diskfd) {
 	struct fbcnode *fbc2 = fbc->fbc_next;
+	if (fbc2 == NULL)
+	{
+		fbc->fbc_next = 0;
+	}
+	else
+	{
+		fbc->fbc_next = (struct fbcnode *)fbc->fbc_next->fbc_blocknum;
+	}
+	seek(diskfd, fbc->fbc_blocknum);
+	if (write(diskfd, fbc, sizeof(struct fbcnode)) == SYSERR)
+	{
+		return SYSERR;
+	}
+	return OK;
 	
 }
