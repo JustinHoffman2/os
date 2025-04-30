@@ -34,6 +34,7 @@ devcall fileDelete(int fd)
 
 	if(supertab->sb_dirlst == NULL || filetab[fd].fn_state == FILE_OPEN)
 	{
+		signal(supertab->sb_dirlock);
 		return SYSERR;
 	}
 
