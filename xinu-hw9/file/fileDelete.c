@@ -21,7 +21,8 @@ devcall fileDelete(int fd)
     //  access to the directory index.
     
 
-	if((supertab == NULL) || (filetab == NULL))
+	if((supertab == NULL) || (filetab == NULL) ||
+		(isbadfd(fd)) || filetab[fd].fn_state == FILE_FREE)
 	{
 		return SYSERR;
 	}
@@ -31,7 +32,7 @@ devcall fileDelete(int fd)
 
 	wait(supertab->sb_dirlock);
 
-	if((supertab->sb_dirlst == NULL) || (filetab[fd].fn_state & (FILE_OPEN | FILE_FREE)))
+	if(supertab->sb_dirlst == NULL || filetab[fd].fn_state == FILE_OPEN)
 	{
 		return SYSERR;
 	}
@@ -41,6 +42,7 @@ devcall fileDelete(int fd)
 	filetab[fd].fn_state = FILE_FREE;
 	strcpy(filetab[fd].fn_name, "");
 	free(filetab[fd].fn_data);
+	filetab[fd].fn_data = NULL;
 	if(sbFreeBlock(supertab, filetab[fd].fn_blocknum) == SYSERR)
 	{
 		signal(supertab->sb_dirlock);
