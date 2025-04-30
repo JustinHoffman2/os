@@ -35,7 +35,7 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		return SYSERR;
 	}
 
-	if (block <= 0 && block > DISKBLOCKTOTAL)
+	if (block <= 0 || block > DISKBLOCKTOTAL)
 	{
 	       return SYSERR;
 	}
@@ -48,6 +48,11 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 	{
 		struct dirblock *swizzleSB;
 		struct fbcnode *newfbc = (struct fbcnode *)malloc(sizeof(struct fbcnode));
+		if (newfbc == NULL)
+		{
+			signal(psuper->sb_freelock);
+			return SYSERR;
+		}
 		newfbc->fbc_blocknum = block;
 		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
@@ -55,6 +60,8 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 
 		if (swizzle(newfbc, diskfd) == NULL)
 		{
+			free(newfbc);
+			signal(psuper->sb_freelock);
 			return SYSERR;
 		}
 		// Write superblock to disk
@@ -63,6 +70,9 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		seek(diskfd, psuper->sb_blocknum);
 		if (write(diskfd, psuper, sizeof(struct superblock)) == SYSERR)
 		{
+			psuper->sb_dirlst = swizzleSB;
+			free(newfbc);
+			signal(psuper->sb_freelock);
 			return SYSERR;
 		}
 		psuper->sb_dirlst = swizzleSB;
@@ -76,10 +86,15 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 		fbc = fbc->fbc_next;
 	}
 
-	if (fbc->fbc_count == FREEBLOCKMAX || fbc->fbc_count == 0) // Case 2
+	if (fbc->fbc_count == FREEBLOCKMAX) // Case 2
 	{
 		// Malloc to get enough space to make a new collector node
 		struct fbcnode *newfbc = (struct fbcnode *)malloc(sizeof(struct fbcnode));
+		if (newfbc == NULL)
+		{
+			signal(psuper->sb_freelock);
+			return SYSERR;
+		}
 		newfbc->fbc_blocknum = block;
 		newfbc->fbc_count = 0;
 		newfbc->fbc_next = NULL;
@@ -87,6 +102,8 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 
 		if (swizzle(fbc, diskfd) == NULL || swizzle(newfbc, diskfd) == NULL)
 		{
+			free(newfbc);
+			signal(psuper->sb_freelock);
 			return SYSERR;
 		}
 
@@ -99,6 +116,7 @@ devcall sbFreeBlock(struct superblock *psuper, int block)
 	fbc->fbc_count++;
 	if (swizzle(fbc, diskfd) == NULL)
 	{
+		signal(psuper->sb_freelock);
 		return SYSERR;
 	}
 
